@@ -1,0 +1,4 @@
+.login-error-msg,
+.signup-error-msg {
+  color: red;
+}

@@ -23,6 +23,8 @@ class Story {
   /** Parses hostname out of URL and returns it. */
 
   getHostName() {
+    console.info("getting host name...");
+
     const url = new URL(this.url);
     return url.hostname;
   }
@@ -51,6 +53,8 @@ class StoryList {
     //  class directly. Why doesn't it make sense for getStories to be an
     //  instance method?
 
+    console.info("getting stories...");
+
     // query the /stories endpoint (no auth required)
     const response = await axios({
       url: `${BASE_URL}/stories`,
@@ -72,6 +76,8 @@ class StoryList {
    */
 
   async addStory(user, { title, author, url }) {
+    console.info("adding story to list");
+
     const token = user.loginToken;
     const response = await axios({
       method: "POST",
@@ -93,7 +99,10 @@ class StoryList {
    */
 
   async removeStory(user, storyId) {
+    console.info("removing story...");
+
     const token = user.loginToken;
+
     await axios({
       url: `${BASE_URL}/stories/${storyId}`,
       method: "DELETE",
@@ -143,24 +152,31 @@ class User {
    */
 
   static async signup(username, password, name) {
-    const response = await axios({
-      url: `${BASE_URL}/signup`,
-      method: "POST",
-      data: { user: { username, password, name } },
-    });
+    console.info("signing user up...");
 
-    let { user } = response.data;
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/signup`,
+        method: "POST",
+        data: { user: { username, password, name } },
+      });
 
-    return new User(
-      {
-        username: user.username,
-        name: user.name,
-        createdAt: user.createdAt,
-        favorites: user.favorites,
-        ownStories: user.stories,
-      },
-      response.data.token
-    );
+      let { user } = response.data;
+
+      return new User(
+        {
+          username: user.username,
+          name: user.name,
+          createdAt: user.createdAt,
+          favorites: user.favorites,
+          ownStories: user.stories,
+        },
+        response.data.token
+      );
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 
   /** Login in user with API, make User instance & return it.
@@ -170,24 +186,31 @@ class User {
    */
 
   static async login(username, password) {
-    const response = await axios({
-      url: `${BASE_URL}/login`,
-      method: "POST",
-      data: { user: { username, password } },
-    });
+    console.info("logging in...");
 
-    let { user } = response.data;
+    try {
+      const response = await axios({
+        url: `${BASE_URL}/login`,
+        method: "POST",
+        data: { user: { username, password } },
+      });
 
-    return new User(
-      {
-        username: user.username,
-        name: user.name,
-        createdAt: user.createdAt,
-        favorites: user.favorites,
-        ownStories: user.stories,
-      },
-      response.data.token
-    );
+      let { user } = response.data;
+
+      return new User(
+        {
+          username: user.username,
+          name: user.name,
+          createdAt: user.createdAt,
+          favorites: user.favorites,
+          ownStories: user.stories,
+        },
+        response.data.token
+      );
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 
   /** When we already have credentials (token & username) for a user,
@@ -195,6 +218,8 @@ class User {
    */
 
   static async loginViaStoredCredentials(token, username) {
+    console.info("logging in with stored credentials...");
+
     try {
       const response = await axios({
         url: `${BASE_URL}/users/${username}`,
@@ -225,6 +250,8 @@ class User {
    */
 
   async addFavorite(story) {
+    console.info("adding to list...");
+
     this.favorites.push(story);
     await this.addOrRemoveFavoriteStory("add", story);
   }
@@ -234,6 +261,8 @@ class User {
    */
 
   async removeFavorite(story) {
+    console.info("removing from favorite...");
+
     this.favorites = this.favorites.filter((s) => s.storyId !== story.storyId);
     await this.addOrRemoveFavoriteStory("remove", story);
   }
@@ -244,6 +273,8 @@ class User {
    * */
 
   async addOrRemoveFavoriteStory(newMethod, story) {
+    console.info("adding/removing favorite story...");
+
     const method = newMethod === "add" ? "POST" : "DELETE";
     const token = this.loginToken;
 

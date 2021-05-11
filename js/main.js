@@ -24,6 +24,9 @@ const $navLogOut = $("#nav-logout");
 
 const $userProfile = $("#user-profile");
 
+const $errorLoginMsg = $(".login-error-msg");
+const $errorSignUpMsg = $(".signup-error-msg");
+
 /** To make it easier for individual components to show just themselves, this
  * is a useful function that hides pretty much everything on the page. After
  * calling this, individual components can re-show just what they want.
@@ -56,10 +59,4 @@ async function start() {
 
 // Once the DOM is entirely loaded, begin the app
 
-console.warn(
-  "HEY STUDENT: This program sends many debug messages to" +
-    " the console. If you don't see the message 'start' below this, you're not" +
-    " seeing those helpful debug messages. In your browser console, click on" +
-    " menu 'Default Levels' and add Verbose"
-);
 $(start);

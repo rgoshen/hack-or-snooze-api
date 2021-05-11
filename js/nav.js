@@ -37,14 +37,14 @@ $body.on("click", "#nav-favorites", navFavoritesClick);
 
 /** Show My Stories on clicking "my stories" */
 
-function navMyStories(evt) {
+function navMyStoriesClick(evt) {
   console.debug("navMyStories", evt);
   hidePageComponents();
   putUserStoriesOnPage();
   $ownStories.show();
 }
 
-$body.on("click", "#nav-my-stories", navMyStories);
+$body.on("click", "#nav-my-stories", navMyStoriesClick);
 
 /** Show login/signup on click on "login" */
 

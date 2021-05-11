@@ -15,11 +15,12 @@ async function getAndShowStoriesOnStart() {
 /**
  * A render method to render HTML for an individual Story instance
  * - story: an instance of Story
+ * - showDeleteBtn: show delete button?
  *
  * Returns the markup for the story.
  */
 
-function generateStoryMarkup(story) {
+function generateStoryMarkup(story, showDeleteBtn = false) {
   // console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
@@ -28,6 +29,7 @@ function generateStoryMarkup(story) {
 
   return $(`
       <li id="${story.storyId}">
+      ${showDeleteBtn ? getDeleteBtnHTML() : ""}
       ${showStar ? getStarHTML(story, currentUser) : ""}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
@@ -37,6 +39,15 @@ function generateStoryMarkup(story) {
         <small class="story-user">posted by ${story.username}</small>
       </li>
     `);
+}
+
+/** Make delete button HTML for story */
+
+function getDeleteBtnHTML() {
+  return `
+      <span class="trash-can">
+        <i class="fas fa-trash-alt"></i>
+      </span>`;
 }
 
 /** Make favorite/not-favorite star for story */
@@ -160,3 +171,19 @@ async function toggleStoryFavorite(evt) {
 }
 
 $storiesLists.on("click", ".star", toggleStoryFavorite);
+
+/** Handle deleting a story. */
+
+async function deleteStory(evt) {
+  console.debug("deleteStory");
+
+  const $closestLi = $(evt.target).closest("li");
+  const storyId = $closestLi.attr("id");
+
+  await storyList.removeStory(currentUser, storyId);
+
+  // re-generate story list
+  await putUserStoriesOnPage();
+}
+
+$ownStories.on("click", ".trash-can", deleteStory);

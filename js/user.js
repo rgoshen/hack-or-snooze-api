@@ -110,6 +110,10 @@ function saveUserCredentialsInLocalStorage() {
 function updateUIOnUserLogin() {
   console.debug("updateUIOnUserLogin");
 
+  hidePageComponents();
+  // re-display stories (so that "favorite" stars can appear)
+  putStoriesOnPage();
+
   $allStoriesList.show();
 
   updateNavOnLogin();
